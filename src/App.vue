@@ -73,12 +73,70 @@ onMounted(async () => {
 <style scoped></style> -->
 
 <script setup>
+import { ref } from 'vue'
 import Navbar from './components/Navbar.vue'
 
 import { RouterView } from 'vue-router'
+
+const name = ref('ram')
+const myString = ref('')
+const myNumber = ref(1)
+const isVisible = ref(true)
 </script>
 
 <template>
   <Navbar />
+
   <RouterView />
+  <hr />
+  <div class="container">
+    <img
+      v-bind:src="`https://api.multiavatar.com/${name}.png`"
+      :alt="name"
+      height="100"
+      width="100"
+    />
+
+    <br />
+    <div>
+      <input
+        type="text"
+        class="form-control my-3"
+        placeholder="some text here"
+        v-model="name"
+      />
+    </div>
+
+    <button
+      :class="{ 'btn btn-primary': name == 'ram' }"
+      @click="name = 'shyam' + Math.floor(Math.random() * 10000)"
+    >
+      Random
+    </button>
+
+    <hr />
+    <div>
+      <h3>v-model.lazy ( listen to change events instead of input)</h3>
+      myString:
+      <pre>{{ myString }}</pre>
+      <br />
+      <input type="text" v-model.lazy.trim="myString" />
+    </div>
+
+    <div>
+      <h3>v-model.number ( listen to change events instead of input)</h3>
+      myString: {{ myNumber }} type: {{ typeof myNumber }}<br />
+      <input type="text" v-model.number="myNumber" />
+    </div>
+
+    <div>
+      <h1>
+        <span v-show="isVisible">v show</span>
+
+        <button class="btn btn-primary" @click="isVisible = !isVisible">
+          toggle v-show
+        </button>
+      </h1>
+    </div>
+  </div>
 </template>
