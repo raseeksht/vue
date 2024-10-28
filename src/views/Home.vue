@@ -1,5 +1,8 @@
 <script setup>
 import TestProp from '@/components/TestProp.vue'
+import store from '../../store'
+
+store.commit('changeActiveTab', 'Home')
 </script>
 
 <template>
