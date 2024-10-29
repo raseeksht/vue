@@ -12,7 +12,17 @@ export default createStore({
   state: {
     count: 0,
     color: 'red',
-    activeTab: 'Home',
+    activeTab: '',
+    showLoginModal: false,
+    showRegisterModal: false,
+    toast: {
+      show: false,
+      title: 'test',
+      body: 'test body',
+    },
+    user: localStorage.getItem('user')
+      ? JSON.parse(localStorage.getItem('user'))
+      : false,
   },
   mutations: {
     increaseCounter(state, inc) {
@@ -26,6 +36,12 @@ export default createStore({
     },
     changeActiveTab(state, tab) {
       state.activeTab = tab
+    },
+    toggleState(state, payload) {
+      state[payload.key] = payload.value ? payload.value : !state[payload.key]
+    },
+    changeToast(state, payload) {
+      state.toast = payload
     },
   },
   actions: {

@@ -2,11 +2,11 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import store from '../../store/index.js'
 
-onMounted(() => {
-  store.commit('changeActiveTab', 'Test')
-})
+// onMounted(() => {
+//   store.commit('changeActiveTab', 'Test')
+// })
 
-store.commit('changeActiveTab', 'Home')
+// store.commit('changeActiveTab', 'Home')
 
 // watch(count, (newVal, oldval) => {
 //   console.log(newVal, oldval)

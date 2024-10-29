@@ -1,7 +1,28 @@
+<script setup>
+import { computed, onMounted } from 'vue'
+import store from '../../store'
+import Modal from './Modal.vue'
+import LoginForm from './LoginForm.vue'
+
+const currLocationComputed = computed({
+  get() {
+    return store.state.activeTab
+  },
+  set(newLoc) {
+    store.commit('changeActiveTab', newLoc)
+  },
+})
+
+onMounted(() => {
+  const curLoc = window.location.href.split('/')[3]
+  store.commit('changeActiveTab', curLoc)
+})
+</script>
+
 <template>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <a class="navbar-brand" href="#">Blogger</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -16,42 +37,80 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
+            <RouterLink
+              :class="{
+                'nav-link': true,
+                active: store.state.activeTab == 'Home',
+              }"
+              aria-current="page"
+              to="/"
+              >Home</RouterLink
             >
-              Dropdown
-            </a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><hr class="dropdown-divider" /></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
-            </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+            <RouterLink
+              to="/about"
+              :class="{
+                'nav-link': true,
+                active: store.state.activeTab == 'about',
+              }"
+              >AboutUs</RouterLink
+            >
+          </li>
+          <li class="nav-item">
+            <RouterLink
+              :class="{
+                'nav-link': true,
+                active: store.state.activeTab == 'contact',
+              }"
+              to="/contact"
+              @click="currLocationComputed = 'contact'"
+              >ContactUs</RouterLink
+            >
+          </li>
+          <li class="nav-item">
+            <RouterLink
+              :class="{
+                'nav-link': true,
+                active: store.state.activeTab == 'blogs',
+              }"
+              to="/blogs"
+              >Blogs</RouterLink
+            >
           </li>
         </ul>
-        <form class="d-flex" role="search">
-          <input
-            class="form-control me-2"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
+        <div v-if="store.state.user">
+          <img
+            :src="`https://api.multiavatar.com/${store.state.user.name}.png`"
+            class="img-fluid"
+            style="height: 40px; widows: 40px"
           />
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+        </div>
+        <div v-else>
+          <Modal
+            title="Login"
+            btnName="Login"
+            stateName="showLoginModal"
+            variant="primary"
+          >
+            <LoginForm />
+          </Modal>
+
+          <Modal
+            title="Register"
+            btnName="Register"
+            stateName="showRegisterModal"
+            variant="secondary"
+            >hey</Modal
+          >
+        </div>
       </div>
     </div>
   </nav>
 </template>
+
+<style lang="css" scoped>
+.active {
+  border: 2px solid red;
+}
+</style>
