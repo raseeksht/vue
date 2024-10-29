@@ -1,63 +1,39 @@
 <script setup>
-import { defineEmits } from 'vue'
-defineProps({
+import { BButton, BModal } from 'bootstrap-vue-next'
+import store from '../../store'
+import { computed } from 'vue'
+
+const props = defineProps({
   title: String,
-  body: String,
+  stateName: String,
+  btnName: String,
+  variant: String,
+  footer: Boolean,
 })
 
-const emit = defineEmits()
-
-const emitData = () => {
-  emit('someVar', 'take this data ')
-}
+const showModal = computed({
+  get() {
+    return store.state[props.stateName]
+  },
+  set(naya) {
+    // toggle any vuex
+    store.commit(`toggleState`, {
+      key: props.stateName,
+      value: naya,
+    })
+  },
+})
 </script>
 
 <template>
-  <!-- Button trigger modal -->
-  <button
-    type="button"
-    class="btn btn-primary"
-    data-bs-toggle="modal"
-    data-bs-target="#exampleModal"
+  <BButton
+    @click="showModal = !showModal"
+    :variant="variant || 'primary'"
+    class="mx-1"
   >
-    Launch demo modal
-  </button>
-
-  <!-- Modal -->
-  <div
-    class="modal fade"
-    id="exampleModal"
-    tabindex="-1"
-    aria-labelledby="exampleModalLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">{{ title }}</h1>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          {{ body }}
-
-          <button class="btn btn-primary" @click="emitData">emit data</button>
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Close
-          </button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
+    {{ btnName }}
+  </BButton>
+  <BModal v-model="showModal" :title="title">
+    <slot></slot>
+  </BModal>
 </template>

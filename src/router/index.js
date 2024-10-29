@@ -1,12 +1,31 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
 import TestProp from '@/components/TestProp.vue'
+import NotFound from '@/views/NotFound.vue'
+import AboutUs from '@/views/AboutUs.vue'
+import ContactUs from '@/views/ContactUs.vue'
+import Blogs from '@/views/Blogs.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
     component: Home,
+  },
+  {
+    path: '/about',
+    name: 'about',
+    component: AboutUs,
+  },
+  {
+    path: '/contact',
+    name: 'contact',
+    component: ContactUs,
+  },
+  {
+    path: '/blogs',
+    name: 'blogs',
+    component: Blogs,
   },
   {
     path: '/test',
@@ -20,7 +39,7 @@ const routes = [
   {
     path: '/:catchNotFound(.*)',
     name: 'notFound',
-    component: TestProp,
+    component: NotFound,
   },
 ]
 
