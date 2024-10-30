@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue'
-import store from '../../store'
+import store from '../../../store'
 store.commit('changeActiveTab', 'blogs')
 
 import { axiosInstance } from '@/api/axiosInstance'
@@ -39,7 +39,9 @@ onMounted(() => {
 
     <div v-if="blogs" class="row row-cols-4 gap-2">
       <div v-for="(blog, index) of blogs.data" :key="index" class="row">
-        <Card class="" :blog="blog" />
+        <RouterLink :to="`/blogs/${blog.id}`" class="text-decoration-none">
+          <Card class="" :blog="blog" />
+        </RouterLink>
       </div>
     </div>
     <!-- pagination -->

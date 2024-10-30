@@ -33,7 +33,11 @@ const showModal = computed({
   >
     {{ btnName }}
   </BButton>
-  <BModal v-model="showModal" :title="title">
+  <BModal v-model="showModal" :title="title" :hide-footer="true">
     <slot></slot>
+
+    <template #footer>
+      <slot name="footer"></slot>
+    </template>
   </BModal>
 </template>

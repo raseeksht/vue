@@ -4,7 +4,10 @@ import TestProp from '@/components/TestProp.vue'
 import NotFound from '@/views/NotFound.vue'
 import AboutUs from '@/views/AboutUs.vue'
 import ContactUs from '@/views/ContactUs.vue'
-import Blogs from '@/views/Blogs.vue'
+import Blogs from '@/views/Blogs/Blogs.vue'
+import Dynamic from '@/views/Dynamic.vue'
+import BlogsLayout from '@/views/Blogs/BlogsLayout.vue'
+import SingleBlog from '@/views/Blogs/SingleBlog.vue'
 
 const routes = [
   {
@@ -25,7 +28,24 @@ const routes = [
   {
     path: '/blogs',
     name: 'blogs',
-    component: Blogs,
+    component: BlogsLayout - ``,
+    children: [
+      {
+        path: '',
+        component: Blogs,
+        name: 'allblogs',
+      },
+      {
+        path: ':blogId',
+        component: SingleBlog,
+        name: 'SingleBlog',
+      },
+    ],
+  },
+  {
+    path: '/dynamic',
+    name: 'dynamic',
+    component: Dynamic,
   },
   {
     path: '/test',
