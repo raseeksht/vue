@@ -11,7 +11,11 @@ console.log(props.blog)
 <template>
   <BCard
     :title="blog.title"
-    :img-src="blog.image"
+    :img-src="
+      blog?.image?.startsWith('http')
+        ? blog.image
+        : `http://localhost:8000/uploads/a.png`
+    "
     img-alt="Image"
     img-top
     tag="article"
