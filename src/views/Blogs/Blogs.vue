@@ -5,7 +5,9 @@ store.commit('changeActiveTab', 'blogs')
 
 import { axiosInstance } from '@/api/axiosInstance'
 import Card from '@/components/Card.vue'
-import { BPagination } from 'bootstrap-vue-next'
+import { BButton, BPagination } from 'bootstrap-vue-next'
+import Modal from '@/components/Modal.vue'
+import AddBlogForm from './AddBlogForm.vue'
 
 const blogs = ref()
 const currentPage = ref(1)
@@ -35,7 +37,22 @@ onMounted(() => {
 </script>
 <template>
   <div class="container">
-    <h1>All Blogs</h1>
+    <div class="d-flex justify-content-between">
+      <div>
+        <h1>All Blogs</h1>
+      </div>
+      <div class="my-auto">
+        <Modal
+          title="Add New Blog"
+          variant="danger"
+          stateName="showLoginModal"
+          btn-name="Add Blog"
+          icon-html="<i class='fa-solid fa-plus'></i>"
+        >
+          <AddBlogForm />
+        </Modal>
+      </div>
+    </div>
 
     <div v-if="blogs" class="row row-cols-4 gap-2">
       <div v-for="(blog, index) of blogs.data" :key="index" class="row">
@@ -58,4 +75,6 @@ onMounted(() => {
       last-text="Last"
     />
   </div>
+
+  <Modal variant="transparent" class="disabled" />
 </template>

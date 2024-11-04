@@ -1,112 +1,158 @@
 <script setup>
-import { axiosInstance } from '@/api/axiosInstance';
-import { ref } from 'vue';
-import { onBeforeMount } from 'vue';
+import { axiosInstance } from '@/api/axiosInstance'
+import { onMounted, reactive, ref } from 'vue'
+import { onBeforeMount } from 'vue'
 import { useRoute } from 'vue-router'
-import Modal from '@/components/Modal.vue';
+import Modal from '@/components/Modal.vue'
+import { BButton } from 'bootstrap-vue-next'
+import store from '../../../store'
+import axios from 'axios'
 
 const route = useRoute()
 const blogId = route.params.blogId
 
-const blog = ref();
-const comments = ref();
-
-
+const blog = ref({})
+const comments = ref()
 
 const fetchBlog = async () => {
-    try {
-        const resp = await axiosInstance.get(`/blogs/${blogId}`)
-        console.log(resp)
-        blog.value = resp.data.data.blog
-        comments.value = resp.data.data.comments
-    } catch (error) {
-        console.log(error)
-        console.log(error.response.data.message)
-        
-    }
+  try {
+    const resp = await axiosInstance.get(`/blogs/${blogId}`)
+    console.log(resp)
+    blog.value = resp.data.data.blog
+    comments.value = resp.data.data.comments
+  } catch (error) {
+    console.log(error)
+    console.log(error.response.data.message)
+  }
 }
 
-onBeforeMount(()=>{
-    fetchBlog()
-})
+const handleEdit = async () => {
+  try {
+    const resp = await axiosInstance.patch(`/blogs/${blogId}`, {
+      title: blog.value.title,
+      content: blog.value.content,
+    })
+    console.log(resp)
+  } catch (err) {
+    console.log(err)
+    store.commit(`toggleState`, { key: 'showLoginModal' })
+    store.commit('changeToast', {
+      show: true,
+      title: 'Error edit',
+      body: err.response.data.message,
+    })
+  }
+}
 
+const handleDelete = async () => {
+  try {
+    const resp = await axiosInstance.delete(`/blogs/${blogId}`)
+    console.log(resp)
+    alert('done')
+  } catch (err) {
+    console.log(err)
+    store.commit('toggleState', { key: 'showLoginModal' })
+    store.commit('changeToast', {
+      show: true,
+      title: 'Error Deleting',
+      body: err.response.data.message,
+    })
+  }
+}
+
+onBeforeMount(() => {
+  fetchBlog()
+})
 </script>
 
 <template>
-  {{ $route.params.blogId }}
   <div class="container">
-    <h1>{{ blog.title  }}</h1>
-
-    <!-- @if ($blog->user->id == auth()->user()->id) -->
-
-    <!-- <modal heading="Edit Your Blog" id="editBlog"> -->
-        <Modal title="Edit Blog" variant="primary" btnName="Edit" stateName="showLoginModal">
-        <form method="post" id="update-blog">
-
+    <div class="d-flex">
+      <div>
+        <h1>{{ blog?.title }}</h1>
+      </div>
+      <div class="my-auto">
+        <Modal
+          title="Edit Blog"
+          variant="outline-primary"
+          iconHtml="<i class='fa-solid fa-pen-to-square'></i>"
+          btnName=""
+          stateName="showLoginModal"
+        >
+          <form method="post" id="update-blog">
             <div class="mb-2">
-                <label for="title" class="form-label">Title</label>
+              <label for="title" class="form-label">Title</label>
 
-                <input
+              <input
                 class="form-control"
                 id="title"
                 name="title"
                 label="Title"
                 v-model="blog.title"
                 required
-                ></input>
+              />
             </div>
 
             <div class="mb-2">
-                <label for="content" class="form-label">Title</label>
+              <label for="content" class="form-label">Title</label>
 
-                <textarea id="content" name="content" label="Content" required v-model="blog.content" class="form-control" style="height:300px">
-                    
-                </textarea>
+              <textarea
+                id="content"
+                name="content"
+                label="Content"
+                required
+                v-model="blog.content"
+                class="form-control"
+                style="height: 300px"
+              >
+              </textarea>
             </div>
-          
-            
-        </form>
-        <footer> 
-            <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Close
-        </button>
-        <button type="submit" class="btn btn-danger" form="delete-blog-form">
-          Delete
-        </button>
-
-        <button type="submit" class="btn btn-primary" form="update-blog">
-          Update changes
-        </button>     -->
-        </footer>
-
-
+          </form>
+          <hr />
+          <div class="d-flex flex-row-reverse">
+            <BButton variant="primary" class="mx-1" @click="handleEdit">
+              <i class="fa-solid fa-floppy-disk"></i>
+              Save
+            </BButton>
+            <BButton variant="danger" class="mx-1" @click="handleDelete">
+              <i class="fa-solid fa-trash-can"></i>
+              Delete
+            </BButton>
+            <BButton
+              variant="secondary"
+              class="mx-1"
+              @click="
+                store.commit(`toggleState`, {
+                  key: `showLoginModal`,
+                  value: false,
+                })
+              "
+            >
+              Cancel
+            </BButton>
+          </div>
         </Modal>
+      </div>
+    </div>
 
-      <!-- <div class="modal-footer">
-       
-      </div> -->
-    <!-- </modal> -->
-
-    <!--prev update garda keu validation err xa vane popup kholne -->
-    <!-- @if ($errors->has('title') || $errors->has('content') || $errors->has('image')) -->
-
-    <!-- @endif -->
-    <!-- @endif -->
-
-    <div>Published: {{ blog.created_at }}</div>
+    <div>Published: {{ blog?.created_at }}</div>
 
     <div class="container">
       <div class="row">
         <div class="col-auto">
           <img
-            src=""
+            :src="
+              blog?.image.startsWith('http')
+                ? blog?.image
+                : `http://localhost:8000/storage/images/${blog?.image}`
+            "
             alt="blog-title"
             class="img-fluid"
             style="max-width: 200px"
           />
         </div>
         <div class="col">
-          <p>{{ blog.content }}</p>
+          <p>{{ blog?.content }}</p>
         </div>
       </div>
     </div>
