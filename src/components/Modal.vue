@@ -9,6 +9,7 @@ const props = defineProps({
   btnName: String,
   variant: String,
   footer: Boolean,
+  iconHtml: String,
 })
 
 const showModal = computed({
@@ -31,13 +32,10 @@ const showModal = computed({
     :variant="variant || 'primary'"
     class="mx-1"
   >
+    <span v-html="iconHtml"></span>
     {{ btnName }}
   </BButton>
   <BModal v-model="showModal" :title="title" :hide-footer="true">
     <slot></slot>
-
-    <template #footer>
-      <slot name="footer"></slot>
-    </template>
   </BModal>
 </template>

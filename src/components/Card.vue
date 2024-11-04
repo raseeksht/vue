@@ -14,7 +14,7 @@ console.log(props.blog)
     :img-src="
       blog?.image?.startsWith('http')
         ? blog.image
-        : `http://localhost:8000/uploads/a.png`
+        : `http://localhost:8000/storage/images/${blog.image}`
     "
     img-alt="Image"
     img-top
