@@ -1,15 +1,19 @@
 <script setup>
 import { axiosInstance } from '@/api/axiosInstance'
-import { onMounted, reactive, ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { onBeforeMount } from 'vue'
 import { useRoute } from 'vue-router'
 import Modal from '@/components/Modal.vue'
 import { BButton } from 'bootstrap-vue-next'
 import store from '../../../store'
-import axios from 'axios'
+import { useRouter } from 'vue-router'
+import Comments from '../Comments/Comments.vue'
+import CommentForm from '../Comments/CommentForm.vue'
 
 const route = useRoute()
 const blogId = route.params.blogId
+
+const router = useRouter()
 
 const blog = ref({})
 const comments = ref()
@@ -26,13 +30,25 @@ const fetchBlog = async () => {
   }
 }
 
+// const fetchComments = async () => {
+//   try{
+//     const resp = await axiosInstance.get(`/comments/${blogId}`)
+//     console.log(resp)
+//   }
+// }
+
 const handleEdit = async () => {
   try {
     const resp = await axiosInstance.patch(`/blogs/${blogId}`, {
       title: blog.value.title,
       content: blog.value.content,
     })
-    console.log(resp)
+    store.commit(`toggleState`, { key: 'showLoginModal' })
+    store.commit('changeToast', {
+      show: true,
+      title: 'Blog Edit Status',
+      body: resp.data.message,
+    })
   } catch (err) {
     console.log(err)
     store.commit(`toggleState`, { key: 'showLoginModal' })
@@ -47,8 +63,13 @@ const handleEdit = async () => {
 const handleDelete = async () => {
   try {
     const resp = await axiosInstance.delete(`/blogs/${blogId}`)
-    console.log(resp)
-    alert('done')
+    store.commit('toggleState', { key: 'showLoginModal' })
+    store.commit('changeToast', {
+      show: true,
+      title: 'Deleted',
+      body: resp.data.message,
+    })
+    router.push('/blogs')
   } catch (err) {
     console.log(err)
     store.commit('toggleState', { key: 'showLoginModal' })
@@ -61,6 +82,11 @@ const handleDelete = async () => {
 }
 
 onBeforeMount(() => {
+  fetchBlog()
+})
+
+watchEffect(() => {
+  const refresh = store.state.refresh //acts as dependency
   fetchBlog()
 })
 </script>
@@ -142,7 +168,7 @@ onBeforeMount(() => {
         <div class="col-auto">
           <img
             :src="
-              blog?.image.startsWith('http')
+              blog?.image?.startsWith('http')
                 ? blog?.image
                 : `http://localhost:8000/storage/images/${blog?.image}`
             "
@@ -157,6 +183,10 @@ onBeforeMount(() => {
       </div>
     </div>
 
-    <h2 class="underline bold">Comments</h2>
+    <h2 class="text-decoration-underline bold my-3">Comments</h2>
+
+    <CommentForm :blogId="blogId" />
+    <!-- comment lists -->
+    <Comments :comments="comments" />
   </div>
 </template>

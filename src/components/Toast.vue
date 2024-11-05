@@ -1,6 +1,20 @@
 <script setup>
 import { BToast } from 'bootstrap-vue-next'
 import store from '../../store'
+import { watchEffect } from 'vue'
+
+watchEffect(cleanUp => {
+  const toast = store.state.toast.show
+  const timeoutId = setTimeout(() => {
+    store.commit('changeToast', {
+      show: false,
+    })
+  }, 3000)
+
+  cleanUp(() => {
+    clearTimeout(timeoutId)
+  })
+})
 </script>
 
 <template>

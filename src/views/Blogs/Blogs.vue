@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch, watchEffect } from 'vue'
 import store from '../../../store'
 store.commit('changeActiveTab', 'blogs')
 
@@ -11,10 +11,6 @@ import AddBlogForm from './AddBlogForm.vue'
 
 const blogs = ref()
 const currentPage = ref(1)
-
-watch(currentPage, () => {
-  fetchAllBlogs()
-})
 
 const fetchAllBlogs = async () => {
   try {
@@ -31,7 +27,10 @@ const fetchAllBlogs = async () => {
   console.log(blogs)
 }
 
-onMounted(() => {
+// immediately trigger this function
+// trigger again if reactive value changes. (currentPage in this case)
+// https://vuejs.org/guide/essentials/watchers.html#watcheffect
+watchEffect(() => {
   fetchAllBlogs()
 })
 </script>
