@@ -23,6 +23,7 @@ export default createStore({
     user: localStorage.getItem('user')
       ? JSON.parse(localStorage.getItem('user'))
       : false,
+    refresh: 1, //just for refetching purpose if needed
   },
   mutations: {
     increaseCounter(state, inc) {
@@ -42,6 +43,9 @@ export default createStore({
     },
     changeToast(state, payload) {
       state.toast = payload
+    },
+    triggerRefresh(state) {
+      state.refresh += 1
     },
   },
   actions: {

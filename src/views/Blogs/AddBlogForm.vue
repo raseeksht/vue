@@ -1,6 +1,6 @@
 <script setup>
 import { BButton } from 'bootstrap-vue-next'
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import store from '../../../store'
 import { axiosInstance } from '@/api/axiosInstance'
 
@@ -10,7 +10,7 @@ const blogData = ref({
 })
 const errors = reactive({ validation: {} })
 
-const isFormValid = computed(() => {
+const checkForErr = () => {
   errors.validation.title =
     blogData.value?.title?.length > 10 ? null : ['Title Must be 10 digit long']
 
@@ -20,7 +20,11 @@ const isFormValid = computed(() => {
       : ['Content must be 40 char long']
 
   errors.validation.image = blogData.value?.image ? null : ['Image is required']
+}
+// watch(blogData, () => {})
 
+const isFormValid = computed(() => {
+  checkForErr()
   return !errors?.validation?.title && !errors?.validation?.content
 })
 
