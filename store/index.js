@@ -15,6 +15,9 @@ export default createStore({
     activeTab: '',
     showLoginModal: false,
     showRegisterModal: false,
+    showAddBlogModal: false,
+    showEditBlogModal: false,
+    showEditCommentModal: false,
     toast: {
       show: false,
       title: 'test',

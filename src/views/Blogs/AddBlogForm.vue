@@ -12,14 +12,16 @@ const errors = reactive({ validation: {} })
 
 const checkForErr = () => {
   errors.validation.title =
-    blogData.value?.title?.length > 10 ? null : ['Title Must be 10 digit long']
+    blogData.value?.title == '' || blogData.value?.title?.length > 10
+      ? null
+      : ['Title Must be 10 digit long']
 
   errors.validation.content =
-    blogData.value?.content?.length > 40
+    blogData.value?.content == '' || blogData.value?.content?.length > 40
       ? null
       : ['Content must be 40 char long']
 
-  errors.validation.image = blogData.value?.image ? null : ['Image is required']
+  // errors.validation.image = blogData.value?.image ? null : ['Image is required']
 }
 // watch(blogData, () => {})
 
