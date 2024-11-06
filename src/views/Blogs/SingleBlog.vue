@@ -11,7 +11,7 @@ import Comments from '../Comments/Comments.vue'
 import CommentForm from '../Comments/CommentForm.vue'
 
 const route = useRoute()
-const blogId = route.params.blogId
+const blogId = Number(route.params.blogId)
 
 const router = useRouter()
 
@@ -21,7 +21,6 @@ const comments = ref()
 const fetchBlog = async () => {
   try {
     const resp = await axiosInstance.get(`/blogs/${blogId}`)
-    console.log(resp)
     blog.value = resp.data.data.blog
     comments.value = resp.data.data.comments
   } catch (error) {
@@ -29,13 +28,6 @@ const fetchBlog = async () => {
     console.log(error.response.data.message)
   }
 }
-
-// const fetchComments = async () => {
-//   try{
-//     const resp = await axiosInstance.get(`/comments/${blogId}`)
-//     console.log(resp)
-//   }
-// }
 
 const handleEdit = async () => {
   try {
@@ -187,6 +179,10 @@ watchEffect(() => {
 
     <CommentForm :blogId="blogId" />
     <!-- comment lists -->
-    <Comments :comments="comments" />
+    <Comments
+      :comments="comments"
+      :blogId="blogId"
+      v-if="comments?.length > 0"
+    />
   </div>
 </template>

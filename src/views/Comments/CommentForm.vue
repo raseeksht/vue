@@ -5,7 +5,7 @@ import { reactive, ref, watchEffect } from 'vue'
 import store from '../../../store'
 
 const props = defineProps({
-  blogId: String,
+  blogId: Number,
   parent: Number,
 })
 
@@ -47,17 +47,17 @@ const handlePostComment = async () => {
 </script>
 
 <template>
-  {{ store.state.refresh }}
   <form class="mb-3" @submit.prevent="handlePostComment">
     <div class="row">
       <div class="col col-10">
-        <label for="commentContent">Make Your Comment</label>
+        <label for="commentContent" v-if="!parent"> Make Your Comment </label>
         <input
           type="text"
           class="form-control"
           :class="{ 'is-invalid': errors?.validation?.commentContent }"
           placeholder="good blog"
           v-model="commentContent"
+          required
         />
         <div
           id="contentHelp"
@@ -69,10 +69,10 @@ const handlePostComment = async () => {
         </div>
       </div>
       <div class="col mt-auto">
-        <BButton type="submit" variant="outline-primary">Comment</BButton>
+        <BButton type="submit" variant="outline-primary">
+          {{ parent ? 'Reply' : 'Comment' }}
+        </BButton>
       </div>
     </div>
-
-    <div class="threedot">three</div>
   </form>
 </template>
