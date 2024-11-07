@@ -50,6 +50,9 @@ export default createStore({
     triggerRefresh(state) {
       state.refresh += 1
     },
+    changeUser(state, newval) {
+      state.user = newval
+    },
   },
   actions: {
     async increaseCounter({ commit }) {

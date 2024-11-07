@@ -3,6 +3,11 @@ import { computed, onMounted } from 'vue'
 import store from '../../store'
 import Modal from './Modal.vue'
 import LoginForm from './LoginForm.vue'
+import { axiosInstance } from '@/api/axiosInstance'
+import { useRouter } from 'vue-router'
+import RegisterForm from './RegisterForm.vue'
+
+const router = useRouter()
 
 const currLocationComputed = computed({
   get() {
@@ -12,6 +17,16 @@ const currLocationComputed = computed({
     store.commit('changeActiveTab', newLoc)
   },
 })
+
+const handleLogout = async () => {
+  axiosInstance.get('/logout')
+  localStorage.removeItem('user')
+  localStorage.removeItem('token')
+  //remove user info  and token from localstorage
+  store.commit('toggleState', { key: 'user', value: null })
+  store.commit('toggleState', { key: 'token', value: null })
+  router.push('/')
+}
 
 onMounted(() => {
   const curLoc = window.location.href.split('/')[3]
@@ -80,11 +95,27 @@ onMounted(() => {
           </li>
         </ul>
         <div v-if="store.state.user">
-          <img
-            :src="`https://api.multiavatar.com/${store.state.user.name}.png`"
-            class="img-fluid"
-            style="height: 40px; widows: 40px"
-          />
+          <div class="dropdown">
+            <button
+              class="btn btn-transparent border-0"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <img
+                :src="`https://api.multiavatar.com/${store.state.user.name}.png`"
+                class="img-fluid rounded-circle"
+                style="height: 40px; widows: 40px"
+              />
+            </button>
+            <ul class="dropdown-menu" style="--bs-dropdown-min-width: none">
+              <li>
+                <button class="btn dropdown-item" @click="handleLogout">
+                  logout
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
         <div v-else>
           <Modal
@@ -101,8 +132,9 @@ onMounted(() => {
             btnName="Register"
             stateName="showRegisterModal"
             variant="secondary"
-            >hey</Modal
           >
+            <RegisterForm />
+          </Modal>
         </div>
       </div>
     </div>
