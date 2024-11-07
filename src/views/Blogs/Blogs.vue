@@ -44,7 +44,7 @@ watchEffect(() => {
         <Modal
           title="Add New Blog"
           variant="danger"
-          stateName="showLoginModal"
+          stateName="showAddBlogModal"
           btn-name="Add Blog"
           icon-html="<i class='fa-solid fa-plus'></i>"
         >
@@ -74,6 +74,4 @@ watchEffect(() => {
       last-text="Last"
     />
   </div>
-
-  <Modal variant="transparent" class="disabled" />
 </template>

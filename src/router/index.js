@@ -8,6 +8,7 @@ import Blogs from '@/views/Blogs/Blogs.vue'
 import Dynamic from '@/views/Dynamic.vue'
 import BlogsLayout from '@/views/Blogs/BlogsLayout.vue'
 import SingleBlog from '@/views/Blogs/SingleBlog.vue'
+import store from '../../store'
 
 const routes = [
   {
@@ -28,7 +29,7 @@ const routes = [
   {
     path: '/blogs',
     name: 'blogs',
-    component: BlogsLayout - ``,
+    component: BlogsLayout,
     children: [
       {
         path: '',
@@ -41,6 +42,7 @@ const routes = [
         name: 'SingleBlog',
       },
     ],
+    meta: { requireAuth: true },
   },
   {
     path: '/dynamic',
@@ -66,6 +68,15 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
+})
+
+router.beforeEach((to, from) => {
+  if (to.meta.requireAuth && !store.state.user) {
+    store.commit('toggleState', { key: 'showLoginModal' })
+    return {
+      path: from.fullPath,
+    }
+  }
 })
 
 export default router

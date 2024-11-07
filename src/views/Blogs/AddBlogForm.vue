@@ -42,7 +42,7 @@ const handleBlogCreate = async () => {
         'Content-Type': 'multipart/form-data',
       },
     })
-    store.commit('toggleState', { key: 'showLoginModal' })
+    store.commit('toggleState', { key: 'showAddBlogModal' })
     store.commit('changeToast', {
       show: true,
       title: 'New Blog Created',
